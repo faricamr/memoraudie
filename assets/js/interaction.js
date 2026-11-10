@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Camera Elements
   const btnStartCamera = document.getElementById('btn-start-camera');
+  const btnSwitchCamera = document.getElementById('btn-switch-camera');
   const btnMirrorCamera = document.getElementById('btn-mirror-camera');
   const btnCapture = document.getElementById('btn-capture');
   const cameraPlaceholder = document.getElementById('camera-placeholder');
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const coverPreview = document.getElementById('cover-preview');
   let videoStream = null;
   let isMirrored = true;
+  let currentFacingMode = 'user';
 
   // Sticker Elements
   const stickerToolbar = document.getElementById('sticker-toolbar');
@@ -127,23 +129,40 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   // 2. Camera & Cover
   // ----------------------------------------------------
+  async function startCamera(facing = currentFacingMode) {
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+    }
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: { ideal: facing }, width: { ideal: 1080 }, height: { ideal: 1080 } } 
+      });
+      currentFacingMode = facing;
+      cameraVideo.srcObject = videoStream;
+      cameraPlaceholder.style.display = 'none';
+      coverPreview.style.display = 'none';
+      cameraVideo.style.display = 'block';
+      cameraVideo.style.transform = isMirrored ? 'scaleX(-1)' : 'none';
+      
+      btnStartCamera.style.display = 'none';
+      if (btnSwitchCamera) btnSwitchCamera.style.display = 'flex';
+      btnCapture.style.display = 'flex';
+      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> Capture';
+      if (btnMirrorCamera) btnMirrorCamera.disabled = false;
+    } catch (err) {
+      alert("Camera access is required to take a cover photo.");
+    }
+  }
+
   if(btnStartCamera) {
-    btnStartCamera.addEventListener('click', async () => {
-      try {
-        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        cameraVideo.srcObject = videoStream;
-        cameraPlaceholder.style.display = 'none';
-        coverPreview.style.display = 'none';
-        cameraVideo.style.display = 'block';
-        cameraVideo.style.transform = isMirrored ? 'scaleX(-1)' : 'none';
-        
-        btnStartCamera.style.display = 'none';
-        btnCapture.style.display = 'flex';
-        btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> Capture';
-        if (btnMirrorCamera) btnMirrorCamera.disabled = false;
-      } catch (err) {
-        alert("Camera access is required to take a cover photo.");
-      }
+    btnStartCamera.addEventListener('click', () => startCamera());
+  }
+
+  if(btnSwitchCamera) {
+    btnSwitchCamera.addEventListener('click', () => {
+      const nextFacing = currentFacingMode === 'user' ? 'environment' : 'user';
+      isMirrored = (nextFacing === 'user');
+      startCamera(nextFacing);
     });
   }
 
@@ -205,15 +224,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const startX = (vw - size) / 2;
         const startY = (vh - size) / 2;
         
-        cameraCanvas.width = size;
-        cameraCanvas.height = size;
+        // Kompresi resolusi standar album cover (maksimal 720px)
+        const targetSize = Math.min(size, 720);
+        cameraCanvas.width = targetSize;
+        cameraCanvas.height = targetSize;
         
         ctx.save();
         if (isMirrored) {
-            ctx.translate(size, 0);
+            ctx.translate(targetSize, 0);
             ctx.scale(-1, 1);
         }
-        ctx.drawImage(cameraVideo, startX, startY, size, size, 0, 0, size, size);
+        ctx.drawImage(cameraVideo, startX, startY, size, size, 0, 0, targetSize, targetSize);
         ctx.restore();
         
         cameraCanvas.toBlob((blob) => {
@@ -232,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Show static timestamp overlay
           showTimestampOverlay();
-        }, 'image/jpeg', 0.85);
+        }, 'image/jpeg', 0.80);
     }
     
     function showTimestampOverlay() {
@@ -608,7 +629,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       finalCanvas.toBlob(async (bakedBlob) => {
-
           const formData = new FormData();
           formData.append('slug', slug);
           formData.append('guest_name', guestNameInput.value.trim());
@@ -648,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSaveMemory.disabled = false;
             if (btnCancelMemory) btnCancelMemory.disabled = false;
           }
-      }, 'image/jpeg', 0.85);
+      }, 'image/jpeg', 0.80);
     });
   }
 

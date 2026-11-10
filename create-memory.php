@@ -138,6 +138,9 @@
               <button type="button" id="btn-start-camera" class="btn-ghost" style="justify-content:center; padding:var(--sp-3);" aria-label="Start camera">
                 <i class="fa-solid fa-video"></i> Start
               </button>
+              <button type="button" id="btn-switch-camera" class="btn-ghost" style="justify-content:center; padding:var(--sp-3); display:none;" aria-label="Switch camera front back">
+                <i class="fa-solid fa-camera-rotate"></i> Flip
+              </button>
               <button type="button" id="btn-mirror-camera" class="btn-ghost" style="justify-content:center; padding:var(--sp-3);" aria-label="Toggle mirror">
                 <i class="fa-solid fa-arrows-left-right"></i> Mirror
               </button>
