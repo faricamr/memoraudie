@@ -1,0 +1,14 @@
+# User uploaded content (audio & covers)
+uploads/*
+!uploads/temp/
+!uploads/temp/.gitkeep
+
+# IDE & Editor settings
+.vscode/
+.idea/
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store
+

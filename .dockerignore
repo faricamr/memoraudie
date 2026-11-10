@@ -1,0 +1,7 @@
+.git
+.vscode
+.dockerignore
+*.md
+uploads/temp/*
+!uploads/temp/.gitkeep
+
