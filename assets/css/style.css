@@ -184,61 +184,7 @@ body::after {
 
 /* Floating star decorations */
 .deco-star {
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
-  color: var(--blue-300);
-  opacity: 0.45;
-  /* animation: floatStar 9s ease-in-out infinite; */
-}
-
-.deco-1 {
-  top: 10%;
-  left: 5%;
-  font-size: 1.1rem;
-  animation-delay: 0s;
-}
-
-.deco-2 {
-  top: 28%;
-  right: 4%;
-  font-size: 0.8rem;
-  animation-delay: 1.8s;
-}
-
-.deco-3 {
-  top: 52%;
-  left: 3%;
-  font-size: 1.35rem;
-  animation-delay: 3.2s;
-}
-
-.deco-4 {
-  top: 73%;
-  right: 6%;
-  font-size: 0.9rem;
-  animation-delay: 4.8s;
-}
-
-.deco-5 {
-  top: 88%;
-  left: 14%;
-  font-size: 0.7rem;
-  animation-delay: 2.4s;
-}
-
-@keyframes floatStar {
-
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 0.4;
-  }
-
-  50% {
-    transform: translateY(-14px) rotate(18deg);
-    opacity: 0.75;
-  }
+  display: none;
 }
 
 /* ─── 5. NAVBAR ─────────────────────────────────────────── */
