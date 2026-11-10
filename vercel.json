@@ -1,9 +1,8 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/:path*",
-      "destination": "https://memoraudie.duckdns.org/:path*"
+      "src": "/(.*)",
+      "dest": "https://memoraudie.duckdns.org/$1"
     }
   ]
 }
-
